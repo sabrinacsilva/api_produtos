@@ -1,10 +1,9 @@
-#👩‍💻 Autoria
-Este projeto foi desenvolvido por Sabrina Costa Silva
-
 # 🛠️ API REST de Produtos com MongoDB
 
 Este projeto é uma **API RESTful** desenvolvida como parte de uma atividade acadêmica da disciplina de Desenvolvimento Web. 
 A API realiza operações de **cadastro, leitura, atualização e exclusão de produtos** em um banco de dados **MongoDB**, sendo acessada de forma pública e documentada via Postman.
+
+Este projeto foi desenvolvido por Sabrina Costa Silva
 
 ## 📌 Funcionalidades Implementadas
 
