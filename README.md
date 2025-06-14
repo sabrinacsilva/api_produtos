@@ -1,8 +1,5 @@
-👩‍💻 Autoria
+#👩‍💻 Autoria
 Este projeto foi desenvolvido por Sabrina Costa Silva
-aluna do 5º semestre de Sistemas de Informação na Uni-FACEF,
-como entrega avaliativa para a disciplina de Desenvolvimento Web.
-
 
 # 🛠️ API REST de Produtos com MongoDB
 
