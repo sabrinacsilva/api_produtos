@@ -3,21 +3,49 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const Produto = require('./models/Produto'); // Verifique se o caminho está correto
+const Produto = require('./models/Produto'); // Certifique-se que o caminho está correto
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Rota da raiz para evitar "Não é possível OBTER /"
-app.get('/', (req, res) => {
-  res.send('🚀 API de Produtos está no ar!');
-});
-
 // Conexão com MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Conectado ao MongoDB'))
   .catch((err) => console.error('❌ Erro ao conectar no MongoDB:', err));
+
+// Rota GET - Página inicial
+app.get('/', (req, res) => {
+  res.send('🚀 API de Produtos está no ar!');
+});
+
+// Rota GET - Listar todos os produtos
+app.get('/produtos', async (req, res) => {
+  const produtos = await Produto.find();
+  res.send(produtos);
+});
+
+// Rota GET - Buscar por ID
+app.get('/produtos/:id', async (req, res) => {
+  try {
+    const produto = await Produto.findById(req.params.id);
+    if (!produto) return res.status(404).send({ erro: 'Produto não encontrado' });
+    res.send(produto);
+  } catch (err) {
+    res.status(400).send({ erro: 'ID inválido' });
+  }
+});
+
+// ✅ NOVA ROTA: Buscar por nome
+app.get('/produtos/nome/:nome', async (req, res) => {
+  try {
+    const produto = await Produto.findOne({ nome: req.params.nome });
+    if (!produto) return res.status(404).send({ erro: 'Produto não encontrado' });
+    res.send(produto);
+  } catch (err) {
+    res.status(400).send({ erro: 'Erro ao buscar produto por nome' });
+  }
+});
 
 // Rota POST - Cadastrar novo produto
 app.post('/produtos', async (req, res) => {
@@ -32,29 +60,7 @@ app.post('/produtos', async (req, res) => {
     await novoProduto.save();
     res.status(201).send(novoProduto);
   } catch (err) {
-    console.error(err);
     res.status(400).send({ erro: 'Erro ao cadastrar produto', detalhes: err.message });
-  }
-});
-
-// Rota GET - Listar todos os produtos
-app.get('/produtos', async (req, res) => {
-  try {
-    const produtos = await Produto.find();
-    res.send(produtos);
-  } catch (err) {
-    res.status(500).send({ erro: 'Erro ao buscar produtos' });
-  }
-});
-
-// Rota GET - Buscar produto por ID
-app.get('/produtos/:id', async (req, res) => {
-  try {
-    const produto = await Produto.findById(req.params.id);
-    if (!produto) return res.status(404).send({ erro: 'Produto não encontrado' });
-    res.send(produto);
-  } catch (err) {
-    res.status(400).send({ erro: 'ID inválido' });
   }
 });
 
@@ -68,7 +74,7 @@ app.put('/produtos/:id', async (req, res) => {
   }
 });
 
-// Rota DELETE - Excluir produto
+// Rota DELETE - Deletar produto
 app.delete('/produtos/:id', async (req, res) => {
   try {
     await Produto.findByIdAndDelete(req.params.id);
@@ -78,7 +84,7 @@ app.delete('/produtos/:id', async (req, res) => {
   }
 });
 
-// Porta
+// Iniciar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 API rodando com sucesso na porta ${PORT}`);
